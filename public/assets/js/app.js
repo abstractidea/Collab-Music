@@ -10,7 +10,7 @@
     app.TEMPO = 5; // frames (interim unit for tempo speed)
     //app.DOT_ON_COLOR = "0, 200, 200";
     app.DOT_ON_COLOR = "0, 92, 148";
-    app.DOT_OFF_COLOR = "0, 0, 0";
+    app.DOT_OFF_COLOR = "75, 75, 75";
     app.INITIAL_IMPACT = .5;
     app.IMPACT_FADE_STEP = .025;
     app.IMPACT_RADIUS = 4;
@@ -388,7 +388,12 @@ $(document).ready(function() {
 
         $('#chat').scrollTop(
             $('#chat')[0].scrollHeight
-            );
+        );
+
+        $('#tempo').on('change', function ()
+        {
+            app.TEMPO = parseInt($(this).val());
+        });
     } else {
         console.error("Canvas context could not be obtained.");
     }

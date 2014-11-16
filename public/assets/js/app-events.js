@@ -4,8 +4,6 @@
             x: e.pageX - $(this).offset().left,
             y: e.pageY - $(this).offset().top
             });
-
-        socket.emit('push-note', 'Hello again, World!');
     };
 
     app.onMouseUp = function(e) {

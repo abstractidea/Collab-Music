@@ -40,6 +40,7 @@
 			<ul>
 				<li><a href="#"><span>Create</span></a></li>
 				<li><a href="#"><span>Logout</span></a></li>
+				<li>Fast<input type="range" id="tempo" min="1" value="5" max="60" step="1">Slow</li>
 			</ul>
 		</nav>
 	</div>
@@ -54,7 +55,7 @@
 
 		socket.on('push-note', function (data)
 		{
-			console.log(data);
+			app.updateDot(data.row, data.col, data.state);
 		});
 	</script>
 	<script src="/assets/js/vendor/jquery-1.10.2.min.js"></script>

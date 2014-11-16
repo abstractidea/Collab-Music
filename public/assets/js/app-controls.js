@@ -6,14 +6,27 @@
         var dot = app.dotFromPoint(point);
         if (dot) {
             console.info("dot is here!");
+ 
+            var newState = !app.tracks[0].grid[dot.row][dot.col];
+            app.tracks[0].grid[dot.row][dot.col] = newState;
 
-            app.tracks[0].grid[dot.row][dot.col] = !app.tracks[0].grid[dot.row][dot.col];
             app.lastDotChange[0] = dot;
+
+            socket.emit('push-note', { row: dot.row, col: dot.col, state: newState });
             // app.draw();
         } else {
             // Point input is not interacting with grid
         }
     };
+
+    /**
+     *
+     */
+     app.updateDot = function (row, col, state)
+     {
+        app.tracks[0].grid[row][col] = state;
+        app.lastDotChange[0] = { row: row, col: col }; 
+     }
 
     /**
      *

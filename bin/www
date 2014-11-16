@@ -13,9 +13,11 @@ var io = require('socket.io')(server)
 io.on('connection', function (socket) {
 	socket.emit('news', { hello: 'world' });
 
+	console.log('new user connected...');
+
 	socket.on('push-note', function (data) {
 		console.log('note pushed...');
-		
+
 		socket.broadcast.emit('push-note', data);
 	});
 });
