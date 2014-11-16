@@ -12,7 +12,7 @@
 <body>
 	<canvas id="editor">Canvas is not available in this browser, at the moment.</canvas>
 	
-	<div id="chat">
+	<!-- <div id="chat">
 		<div class="message">Hey, guys. Let's try something fast-paced.</div>
 		<div class="message">Nah.  Make it move.</div>
 		<div class="message">Nyan cat is our ruler.</div>
@@ -31,19 +31,21 @@
 		<div class="message">If you say so... ?</div>
 		<div class="message">I do say so.</div>
 		<div class="message">You are cool.  You are cool.  You are cool.  You are cool.  You are cool.  You are cool.  You are cool.  You are cool.  </div>
-	</div>
+	</div> -->
 	
 	<div id="nav">
 		<h1>Arietta</h1>
 		
 		<nav>
 			<ul>
-				<li><a href="#"><span>Create</span></a></li>
-				<li><a href="#"><span>Logout</span></a></li>
+				<!-- <li><a href="#"><span>Create</span></a></li>
+				<li><a href="#"><span>Logout</span></a></li> -->
+				<li><a href="#" id="js-clear-grid">Clear Grid</a></li>
 				<li>Fast<input type="range" id="tempo" min="1" value="5" max="60" step="1">Slow</li>
 			</ul>
 		</nav>
 	</div>
+
 	<script src="http://cdn.socket.io/socket.io-1.2.0.js"></script>
 	<script>
 		var socket = io.connect('http://localhost');
@@ -56,6 +58,11 @@
 		socket.on('push-note', function (data)
 		{
 			app.updateDot(data.row, data.col, data.state);
+		});
+
+		socket.on('push-action', function (action)
+		{
+			// app.clearGrid();
 		});
 	</script>
 	<script src="/assets/js/vendor/jquery-1.10.2.min.js"></script>

@@ -28,6 +28,19 @@
         app.lastDotChange[0] = { row: row, col: col }; 
      }
 
+    app.clearGrid = function ()
+    {
+        for (var i = 0; i < app.tracks[0].grid.length; ++i)
+        {
+            for (var j = 0; j < app.tracks[0].grid[i].length; ++j)
+            {
+                app.tracks[0].grid[i][j] = false;
+            }
+        }
+
+        // socket.emit('push-action', {});
+    }
+
     /**
      *
      */

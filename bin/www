@@ -15,9 +15,15 @@ io.on('connection', function (socket) {
 
 	console.log('new user connected...');
 
-	socket.on('push-note', function (data) {
+	socket.on('push-note', function (data)
+	{
 		console.log('note pushed...');
 
 		socket.broadcast.emit('push-note', data);
+	});
+
+	socket.on('push-action', function (action)
+	{
+		socket.broadcast.emit('push-action', action);
 	});
 });

@@ -4,6 +4,8 @@
 
     app.DOTS_PER_COL = 16;
     app.COLS_PER_TRACK = 16;
+
+
     app.DOT_SIZE = 36; // px
     app.DOT_PADDING = 4; // px
     app.MILLIS_PER_FRAME = 1000 / 60;
@@ -28,9 +30,7 @@
     app.lastDotChange[0] = null;
     app.isPlaying = true;
     // Setup to hold one track, for now
-    app.tracks = [
-                    []
-                    ];
+    app.tracks = [ [] ];
     app.tracks[0].grid = [];
     app.tracks[0].impactGrid = [];
 
@@ -51,6 +51,14 @@
 
         app.EDITOR_OFFSET_X = 0.5 * (availableWidth - app.DOT_SIZE * app.DOTS_PER_COL - app.DOT_PADDING * (app.DOTS_PER_COL + 1));
         app.EDITOR_OFFSET_Y = 0.5 * (availableHeight - app.DOT_SIZE * app.COLS_PER_TRACK - app.DOT_PADDING * (app.COLS_PER_TRACK + 1));
+    };
+
+    /**
+     * Get Mouse Position From Canvas and Event
+     */
+    app.getMousePosition = function (canvas, e)
+    {
+        var rect = canvas.getBoundingClientRect();
     };
 
     /**

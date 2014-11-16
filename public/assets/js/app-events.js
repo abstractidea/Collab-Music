@@ -26,4 +26,11 @@
                 break;
         }
     };
+
+    $('#js-clear-grid').on('click', function (e)
+    {
+        e.preventDefault();
+
+        app.clearGrid();
+    });
 }(window.app = window.app || {}, jQuery));
