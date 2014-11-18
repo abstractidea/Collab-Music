@@ -10,19 +10,39 @@ var server = app.listen(app.get('port'), function() {
 
 var io = require('socket.io')(server)
 
-io.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
 
+
+var users = [];
+var availableColors = [
+  "blue",
+  "green",
+  "red"
+  ];
+
+io.on('connection', function (socket) {
   console.log('new user connected...');
+  
+  var user = {
+    id: users.length,
+    color: availableColors[users.length % availableColors.length]
+    };
+  users.push(user);
+
+  console.info("new user: " + JSON.stringify(user));
 
   socket.on('push-note', function (data) {
-    console.log('note pushed...');
+    console.log('note pushed... by ' + JSON.stringify(user));
+
+    data.user = user;
 
     socket.broadcast.emit('push-note', data);
   });
 
   socket.on('clear-grid', function (action) {
-    console.info('clear-grid');
+    console.info('clear-grid, requested by ' + JSON.stringify(user));
+ 
+    action.user = user;
+
     socket.broadcast.emit('clear-grid', action);
   });
 });
