@@ -1,20 +1,6 @@
-David B.
-server state of current song
-
---------------
-David M.
-responsiveness
-
---------------
-Matthew V.
-clearing state
-user color
-
-
-ALL THE THINGS
+Future Dreams - ALL THE THINGS
 ==============
-? multi-tracks
-
-dynamic instrument selection
-song length
-syncing
+* Multi-tracks
+* Dynamic instrument selection
+* Adjustable song length
+* Syncing playback
