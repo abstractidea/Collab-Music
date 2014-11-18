@@ -10,7 +10,7 @@
             var newState = !app.tracks[0].grid[dot.row][dot.col];
             app.tracks[0].grid[dot.row][dot.col] = newState;
 
-            app.lastDotChange[0] = dot;
+            app.lastDotChanges[app.thisUser.id] = dot;
 
             app.socket.emit('push-note', { row: dot.row, col: dot.col, state: newState });
             // app.draw();
@@ -22,10 +22,14 @@
     /**
      *
      */
-     app.updateDot = function (row, col, state)
-     {
+     app.updateDot = function (row, col, state, collaborator) {
         app.tracks[0].grid[row][col] = state;
-        app.lastDotChange[0] = { row: row, col: col }; 
+        
+	if (collaborator) {
+            app.lastDotChanges[collaborator.id] = { row: row, col: col};
+	} else {
+            app.lastDotChanges[app.thisUser.id] = { row: row, col: col};
+        }
      }
 
      /**
@@ -41,6 +45,8 @@
                 app.tracks[0].grid[i][j] = false;
             }
         }
+
+	app.lastDotChanges = [];
 
 	console.info("local grid cleared");
 	if (syncIsRequested) {

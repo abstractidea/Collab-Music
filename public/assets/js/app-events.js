@@ -15,7 +15,7 @@
     };
 
     app.onKeyDown = function(e) {
-        console.info("onKeyDown e.which=" + e.which);
+        // console.info("onKeyDown e.which=" + e.which);
 
         var SPACE = 32;
 

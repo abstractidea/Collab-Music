@@ -14,9 +14,15 @@ var io = require('socket.io')(server)
 
 var users = [];
 var availableColors = [
-  "blue",
-  "green",
-  "red"
+  "0, 0, 255",
+  "0, 255, 0",
+  "255, 0, 0",
+  "0, 92, 148",
+  "0, 148, 92",
+  "92, 0, 148",
+  "92, 148, 0",
+  "148, 0, 92",
+  "148, 92, 0"
   ];
 
 io.on('connection', function (socket) {
@@ -26,6 +32,11 @@ io.on('connection', function (socket) {
     id: users.length,
     color: availableColors[users.length % availableColors.length]
     };
+
+  var connCompleteData = {};
+  connCompleteData.user = user;
+  connCompleteData.collaborators = users;
+
   users.push(user);
 
   console.info("new user: " + JSON.stringify(user));
@@ -45,4 +56,13 @@ io.on('connection', function (socket) {
 
     socket.broadcast.emit('clear-grid', action);
   });
+
+  socket.on('disconnect', function (data) {
+    console.log('user disconnected: ' + JSON.stringify(user));
+
+    socket.broadcast.emit('lost-user', {user: user});
+  });
+
+  io.to(socket.id).emit('connection-complete', connCompleteData);
+  socket.broadcast.emit('new-user', {user: user});
 });

@@ -26,8 +26,7 @@
     app.stepTimeoutID;
     app.tempoFrame = 0;
     app.currentCol = -1; // Value of -1 will force first column to play
-    app.lastDotChange = [];
-    app.lastDotChange[0] = null;
+    app.lastDotChanges = [];
     app.isPlaying = true;
     // Setup to hold one track, for now
     app.tracks = [ [] ];
@@ -36,6 +35,9 @@
 
     // Socket.IO regulated socket
     app.socket;
+    
+    app.thisUser;
+    app.collaborators = [];
 
     /**
      * Registers @var{canvas} with @var{app}.
@@ -119,6 +121,11 @@
         // if (app.lastDotChange[0]) {
         //     app.drawLastChange(app.lastDotChange[0].row, app.lastDotChange[0].col);
         // }
+	app.lastDotChanges.forEach(function (dot, id) {
+            if (dot) {
+	      app.drawLastChange(dot.row, dot.col, app.collaborators[id].color);
+            }
+	});
     };
 
     /**
@@ -147,7 +154,7 @@
     /**
      * TODO Finish me
      */
-    app.drawLastChange = function(row, col) {
+    app.drawLastChange = function(row, col, color) {
         var alpha = 0.25;
         if (app.currentCol == col) {
             alpha = 0.4;
@@ -157,10 +164,10 @@
 
         if (app.tracks[0].grid[row][col]) {
             // app.ctx.fillStyle = "rgba(" + app.DOT_ON_COLOR +  ", " + alpha + ")";
-            app.ctx.strokeStyle = "rgba(" + app.DOT_ON_COLOR +  ", " + alpha + ")";
+            app.ctx.strokeStyle = "rgba(" + color +  ", " + alpha + ")";
         } else {
             //app.ctx.fillStyle = "rgba(" + app.DOT_OFF_COLOR + ", " + alpha + ")";
-            app.ctx.strokeStyle = "rgba(" + app.DOT_OFF_COLOR + ", " + alpha + ")";
+            app.ctx.strokeStyle = "rgba(" + color + ", " + alpha + ")";
         }
 
         // Draw dot
@@ -317,12 +324,28 @@
     app.setupSocketConnection = function() {
         app.socket = io.connect('http://localhost');
 
-        app.socket.on('news', function (data) {
-            console.log(data);
-            app.socket.emit('my other event', { my: 'data' });
+	app.socket.on('connection-complete', function(data) {
+            console.log('connection complete, you are: ' + JSON.stringify(data.user));
+	    console.log('...collaborators: ' + JSON.stringify(data.collaborators));
+
+	    app.thisUser = data.user;
+	    
+	    data.collaborators.forEach(function (collaborator) {
+                app.collaborators[collaborator.id] = collaborator;
+	    });
+        });
+        app.socket.on('new-user', function (data) {
+            console.log("new collaborator has joined: " + JSON.stringify(data.user));
+
+	    app.collaborators[data.user.id] = data.user;
+        });
+        app.socket.on('lost-user', function(data) {
+            console.log('lost user: ' + JSON.stringify(data));
+            app.lastDotChanges[data.user.id] = null;
         });
         app.socket.on('push-note', function (data) {
-            app.updateDot(data.row, data.col, data.state);
+            console.info('note has been pushed by: ' + JSON.stringify(data.user));
+            app.updateDot(data.row, data.col, data.state, data.user);
         });
         app.socket.on('clear-grid', function (action) {
             app.clearGrid(false);
