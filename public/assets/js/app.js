@@ -34,6 +34,9 @@
     app.tracks[0].grid = [];
     app.tracks[0].impactGrid = [];
 
+    // Socket.IO regulated socket
+    app.socket;
+
     /**
      * Registers @var{canvas} with @var{app}.
      */
@@ -246,40 +249,6 @@
         notes[14] = MIDI.keyToNote["D1"];
         notes[15] = MIDI.keyToNote["C1"];
 
-        // notes[0] = MIDI.keyToNote["C5"];
-        // notes[1] = MIDI.keyToNote["A4"];
-        // notes[2] = MIDI.keyToNote["G4"];
-        // notes[3] = MIDI.keyToNote["F4"];
-        // notes[4] = MIDI.keyToNote["D4"];
-        // notes[5] = MIDI.keyToNote["C4"];
-        // notes[6] = MIDI.keyToNote["A3"];
-        // notes[7] = MIDI.keyToNote["G3"];
-        // notes[8] = MIDI.keyToNote["F3"];
-        // notes[9] = MIDI.keyToNote["D3"];
-        // notes[10] = MIDI.keyToNote["C3"];
-        // notes[11] = MIDI.keyToNote["A2"];
-        // notes[12] = MIDI.keyToNote["G2"];
-        // notes[13] = MIDI.keyToNote["F2"];
-        // notes[14] = MIDI.keyToNote["D2"];
-        // notes[15] = MIDI.keyToNote["C2"];
-
-        // notes[0] = MIDI.keyToNote["C6"];
-        // notes[1] = MIDI.keyToNote["A5"];
-        // notes[2] = MIDI.keyToNote["G5"];
-        // notes[3] = MIDI.keyToNote["F5"];
-        // notes[4] = MIDI.keyToNote["D5"];
-        // notes[5] = MIDI.keyToNote["C5"];
-        // notes[6] = MIDI.keyToNote["A4"];
-        // notes[7] = MIDI.keyToNote["G4"];
-        // notes[8] = MIDI.keyToNote["F4"];
-        // notes[9] = MIDI.keyToNote["D4"];
-        // notes[10] = MIDI.keyToNote["C4"];
-        // notes[11] = MIDI.keyToNote["A3"];
-        // notes[12] = MIDI.keyToNote["G3"];
-        // notes[13] = MIDI.keyToNote["F3"];
-        // notes[14] = MIDI.keyToNote["D3"];
-        // notes[15] = MIDI.keyToNote["C3"];
-
         for (var row = 0; row < app.DOTS_PER_COL; row++) {
             if (app.tracks[0].grid[row][col]) {
                 app.tracks[0].impactGrid[row][col] = app.INITIAL_IMPACT;
@@ -340,26 +309,24 @@
             app.tracks[0].impactGrid.push(impacts);
         }
 
-	/*
-        // dispatcher.bind('event_name', function(data) {
-        //   console.log(data.message); // would output 'this is a message'
-        // });
-
-
-        var success = function(response) {
-          console.log("You are awesome because: "+response.message);
-        }
-
-        var failure = function(response) {
-          console.log("You are not very awesome because: "+response.message);
-        }
-
-        var dispatcher = new WebSocketRails('104.200.18.11:3000/websocket');
-        var message = { awesomeness: 4 }
-        dispatcher.trigger('awesomeness_approval', message, success, failure); 
-	*/
+        app.setupSocketConnection();
 
         app.stepTimeoutID = window.setTimeout(app.step, app.MILLIS_PER_FRAME);
+    };
+
+    app.setupSocketConnection = function() {
+        app.socket = io.connect('http://localhost');
+
+        app.socket.on('news', function (data) {
+            console.log(data);
+            app.socket.emit('my other event', { my: 'data' });
+        });
+        app.socket.on('push-note', function (data) {
+            app.updateDot(data.row, data.col, data.state);
+        });
+        app.socket.on('clear-grid', function (action) {
+            app.clearGrid(false);
+        });
     };
 }(window.app = window.app || {}, jQuery));
 
@@ -393,13 +360,12 @@ $(document).ready(function() {
                 app.init();
                 }
             });
-
+/*
         $('#chat').scrollTop(
-            $('#chat')[0].scrollHeight
+            $('#chat')[0].scrollHeight;
         );
-
-        $('#tempo').on('change', function ()
-        {
+*/
+        $('#tempo').on('change', function () {
             app.TEMPO = parseInt($(this).val());
         });
     } else {

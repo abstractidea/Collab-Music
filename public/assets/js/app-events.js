@@ -27,10 +27,12 @@
         }
     };
 
-    $('#js-clear-grid').on('click', function (e)
-    {
+    $('#js-clear-grid').on('click', function (e) {
+        console.info("js-clear-grid clicked");
+
         e.preventDefault();
 
-        app.clearGrid();
+	console.info("time to request clear");
+        app.clearGrid(true);
     });
 }(window.app = window.app || {}, jQuery));

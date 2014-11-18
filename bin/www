@@ -11,19 +11,18 @@ var server = app.listen(app.get('port'), function() {
 var io = require('socket.io')(server)
 
 io.on('connection', function (socket) {
-	socket.emit('news', { hello: 'world' });
+  socket.emit('news', { hello: 'world' });
 
-	console.log('new user connected...');
+  console.log('new user connected...');
 
-	socket.on('push-note', function (data)
-	{
-		console.log('note pushed...');
+  socket.on('push-note', function (data) {
+    console.log('note pushed...');
 
-		socket.broadcast.emit('push-note', data);
-	});
+    socket.broadcast.emit('push-note', data);
+  });
 
-	socket.on('push-action', function (action)
-	{
-		socket.broadcast.emit('push-action', action);
-	});
+  socket.on('clear-grid', function (action) {
+    console.info('clear-grid');
+    socket.broadcast.emit('clear-grid', action);
+  });
 });

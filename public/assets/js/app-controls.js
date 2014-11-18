@@ -12,7 +12,7 @@
 
             app.lastDotChange[0] = dot;
 
-            socket.emit('push-note', { row: dot.row, col: dot.col, state: newState });
+            app.socket.emit('push-note', { row: dot.row, col: dot.col, state: newState });
             // app.draw();
         } else {
             // Point input is not interacting with grid
@@ -28,8 +28,12 @@
         app.lastDotChange[0] = { row: row, col: col }; 
      }
 
-    app.clearGrid = function ()
-    {
+     /**
+      * 
+      */
+    app.clearGrid = function (syncIsRequested) {
+        console.info("clearGrid syncIsRequest = " + syncIsRequested);
+
         for (var i = 0; i < app.tracks[0].grid.length; ++i)
         {
             for (var j = 0; j < app.tracks[0].grid[i].length; ++j)
@@ -38,7 +42,11 @@
             }
         }
 
-        // socket.emit('push-action', {});
+	console.info("local grid cleared");
+	if (syncIsRequested) {
+            console.info("preparing to request remote clear");
+            app.socket.emit('clear-grid', {});
+	}
     }
 
     /**
